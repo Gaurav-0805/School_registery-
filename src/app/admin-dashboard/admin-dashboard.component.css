@@ -1,0 +1,314 @@
+/* Ensure No White Space on Left */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Remove White Space Around the Dashboard */
+.admin-dashboard {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Sidebar Fix to Start from Edge */
+.sidebar {
+    width: 240px;
+    background-color: #2c3e50;
+    padding: 20px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    box-shadow: 2px 0px 8px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    left: 0;
+    position: fixed; /* Fixed to Start from Left Edge */
+    top: 0;
+    height: 100vh;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+/* Ensure Sidebar Starts from the Very Left Edge */
+body {
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* Sidebar Title Styling */
+.sidebar-title {
+    font-size: 20px;
+    color: #ecf0f1;
+    margin-bottom: 24px;
+}
+
+.sidebar button {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: #34495e;
+    color: #ecf0f1;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: left;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ✅ Active and Hover State for Sidebar Buttons */
+.sidebar button.active,
+.sidebar button:hover {
+    background-color: #1abc9c;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+/* ============================== */
+/* Manage Users Dropdown          */
+/* ============================== */
+.dropdown {
+    position: relative;
+}
+
+.manage-users-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #34495e;
+    padding: 12px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.manage-users-btn:hover {
+    background-color: #1abc9c;
+}
+
+/* ✅ Add User and Delete User Buttons with Login Logs Color */
+.dropdown-content button {
+    background-color: #34495e;
+    color: white;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dropdown-content button:hover {
+    background-color: #1abc9c;
+    transform: scale(1.05);
+}
+
+/* ============================== */
+/* Main Content Styling           */
+/* ============================== */
+.main-content {
+    flex-grow: 1;
+    margin-left: 240px; /* Push Main Content to Account for Sidebar Width */
+    padding: 30px;
+    background-color: #fff;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    box-shadow: -2px 0px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================== */
+/* Header Styling                 */
+/* ============================== */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* ============================== */
+/* Heading Styling                */
+/* ============================== */
+h2 {
+    color: #3f51b5;
+    font-size: 26px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* ============================== */
+/* Filter Section Styling         */
+/* ============================== */
+.filter-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+}
+
+select, input[type="date"], input[type="text"], .fetch-button {
+    padding: 8px 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+    width: auto;
+}
+
+.fetch-button {
+    background-color: #27ae60;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+.fetch-button:hover {
+    background-color: #219150;
+}
+
+/* ============================== */
+/* Tables Styling                 */
+/* ============================== */
+.stats-table, .log-table, .delete-user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: #fff;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* ✅ Column Alignment Fix */
+.stats-table th, .log-table th, .delete-user-table th {
+    background: #3f51b5;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    text-align: center;
+}
+
+.stats-table td, .log-table td, .delete-user-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+/* ✅ Ensure Subject Column is Left Aligned */
+.stats-table th:nth-child(1),
+.stats-table td:nth-child(1) {
+    text-align: left;
+}
+
+.stats-table tr:nth-child(even), .log-table tr:nth-child(even), .delete-user-table tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.stats-table tr:hover, .log-table tr:hover, .delete-user-table tr:hover {
+    background: #e3f2fd;
+}
+
+/* ============================== */
+/* User Management Styling        */
+/* ============================== */
+.user-management-container {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-tabs {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.user-tabs button {
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+    background: #3f51b5;
+    color: white;
+}
+
+.user-tabs button:hover {
+    background: #2c3e50;
+}
+
+/* ============================== */
+/* Add User Form Styling          */
+/* ============================== */
+.user-management-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.user-management-form input,
+.user-management-form select {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    width: 200px;
+}
+
+.user-management-form button {
+    padding: 10px 15px;
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.user-management-form button:hover {
+    background-color: #2c3e50;
+}
+
+/* ============================== */
+/* Alerts Styling                 */
+/* ============================== */
+.alert {
+    padding: 12px;
+    margin-top: 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-success {
+    background: #DFF2BF;
+    color: #4CAF50;
+}
+
+.alert-error {
+    background: #FFD2D2;
+    color: #E53935;
+}

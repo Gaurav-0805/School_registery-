@@ -1,0 +1,81 @@
+<div class="dashboard-container">
+  <h2>Welcome to Dashboard</h2>
+  <p *ngIf="userRole === 'admin'">👑 Admin Dashboard</p>
+
+  <hr>
+
+  <!-- Month and Year Selection Form (Visible only for Admins) -->
+  <div *ngIf="userRole === 'admin'">
+      <h3>📅 Select Month and Year</h3>
+      <form [formGroup]="monthYearForm" (ngSubmit)="fetchStudentDetails()">
+          <label for="month">Choose Month:</label>
+          <select id="month" formControlName="month">
+              <option value="">-- Select Month --</option>
+              <option *ngFor="let month of getMonths()" [value]="month.value">{{ month.name }}</option>
+          </select>
+
+          <label for="year">Choose Year:</label>
+          <select id="year" formControlName="year">
+              <option value="">-- Select Year --</option>
+              <option *ngFor="let year of getYears()" [value]="year">{{ year }}</option>
+          </select>
+
+          <div *ngIf="monthYearForm.invalid && monthYearForm.touched" class="error">
+              ❌ Both fields are required!
+          </div>
+
+          <button type="submit" [disabled]="monthYearForm.invalid">Fetch Student Details</button>
+      </form>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="isLoading">🔄 Fetching student data...</div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <!-- Display Total Students -->
+  <div *ngIf="totalStudents !== null">
+      <h3>📊 Total Students: {{ totalStudents }}</h3>
+  </div>
+
+  <!-- Display Average Marks -->
+  <div *ngIf="avgMarksBySubject.length > 0">
+      <h3>📚 Average Marks by Subject</h3>
+      <table>
+          <thead>
+              <tr>
+                  <th>Subject</th>
+                  <th>Average Marks</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let subject of avgMarksBySubject">
+                  <td>{{ subject.subject_name }}</td>
+                  <td>{{ subject.average_marks | number: '1.1-1' }}%</td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+
+  <!-- Display Top Students -->
+  <div *ngIf="topStudentsBySubject.length > 0">
+      <h3>🏆 Top Students by Subject</h3>
+      <table>
+          <thead>
+              <tr>
+                  <th>Subject</th>
+                  <th>Top Student</th>
+                  <th>Marks</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let student of topStudentsBySubject">
+                  <td>{{ student.subject_name }}</td>
+                  <td>{{ student.student_name }}</td>
+                  <td>{{ student.score }}</td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+</div>

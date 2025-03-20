@@ -1,0 +1,169 @@
+/* ===== Overall Dashboard Styles ===== */
+.student-dashboard {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Wrapper to provide proper spacing */
+.dashboard-wrapper {
+    margin-top: 2rem;  /* ✅ Added spacing to avoid overlap with navbar */
+}
+
+/* ✅ Ensure header & filters stay aligned */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+/* ✅ NEW: Ensure filter section moves down */
+.filter-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    margin-top: 20px; /* ✅ Fix: Push selection area down */
+}
+
+/* Labels */
+.filter-controls label {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Select Dropdowns */
+select {
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 14px;
+    width: 160px;
+    background-color: #fff;
+}
+
+select:hover, select:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+/* Fetch Button */
+button {
+    padding: 0.5rem 1.2rem;
+    background-color: #4a90e2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 14px;
+}
+
+button:hover {
+    background-color: #3a7bd5;
+}
+
+/* ===== Marks Table ===== */
+table {
+    width: 100%;
+    margin-top: 1rem;
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background-color: #4a90e2;
+    color: white;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #e0e0e0;
+    transition: background-color 0.3s ease;
+}
+
+/* ===== Error & Loading Messages ===== */
+.error-message {
+    color: #ff4d4d;
+    background-color: #ffe5e5;
+    padding: 0.8rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* ===== No Marks Message (Hidden until fetch button is clicked) ===== */
+.no-marks {
+    color: #888;
+    text-align: center;
+    font-style: italic;
+    margin-top: 1rem;
+    display: none; /* ✅ Initially hidden */
+}
+
+/* Show message only when marksFetched is true */
+.marksFetched .no-marks {
+    display: block;
+}
+
+/* ===== Logout Button Styling ===== */
+button.logout-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.4rem 1rem;
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.logout-button:hover {
+    background-color: #c0392b;
+}
+
+/* ===== Responsive Fixes for Small Screens ===== */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .filter-controls {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    select, button {
+        width: 100%;
+    }
+
+    h1 {
+        text-align: center;
+        width: 100%;
+    }
+}

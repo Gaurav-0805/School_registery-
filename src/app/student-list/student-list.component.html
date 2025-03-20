@@ -1,0 +1,32 @@
+<div class="student-list-container">
+   
+
+    <!-- ✅ Loading State -->
+    <p *ngIf="loading">⏳ Loading students...</p>
+    
+    <!-- ✅ Error Message -->
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+    <!-- ✅ Student Table (Always Visible) -->
+    <table *ngIf="students.length > 0" class="student-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Student ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let student of students">
+                <td>{{ student?.name }}</td>
+                <td>{{ student?.username }}</td>
+                <td>{{ student?.userID }}</td>  
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ✅ Message if No Students Found -->
+    <p *ngIf="students.length === 0 && !loading && !errorMessage">
+        ⚠️ No students found.
+    </p>
+</div>

@@ -21,10 +21,8 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/assets",  // Correct assets folder reference
+              "src/favicon.ico"
             ],
             "styles": [
               "src/styles.css"
@@ -79,10 +77,8 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/assets",  // Correct assets folder reference
+              "src/favicon.ico"
             ],
             "styles": [
               "src/styles.css"
@@ -92,5 +88,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "7ac04b53-fcfb-48ae-96ae-28bd894fea7c"
   }
 }

@@ -1,0 +1,187 @@
+<div class="admin-dashboard"> 
+    <!-- ✅ Sidebar Navigation -->
+    <aside class="sidebar">
+        <h3 class="sidebar-title">Admin Panel</h3>
+        
+        <button (click)="setActiveSection('student-stats')" [class.active]="activeSection === 'student-stats'">
+            📚 Student Stats
+        </button>
+
+        <button (click)="setActiveSection('login-logs')" [class.active]="activeSection === 'login-logs'">
+            📊 Login Logs
+        </button>
+
+        <div class="dropdown-content">
+            <button (click)="setActiveSection('add-user')" [class.active]="activeSection === 'add-user'">➕ Add User</button>
+            <button (click)="setActiveSection('delete-user')" [class.active]="activeSection === 'delete-user'">❌ Delete User</button>
+        </div>
+
+        <button (click)="setActiveSection('student-list')" [class.active]="activeSection === 'student-list'">
+            📋 Student List
+        </button>
+    </aside>
+
+    <!-- ✅ Main Content Section -->
+    <div class="main-content">
+
+        <!-- ✅ Success & Error Messages -->
+        <div *ngIf="successMessage" class="success-message">
+            ✅ {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="error-message">
+            ❌ {{ errorMessage }}
+        </div>
+
+        <!-- ✅ Header Container for Title & Filters -->
+        <div class="header-container">
+            <h2>{{ dynamicHeading }}</h2>
+
+            <!-- ✅ Filters for Student Stats -->
+            <div class="filter-section" *ngIf="activeSection === 'student-stats'">
+                <label>Month:</label>
+                <select [(ngModel)]="selectedMonth">
+                    <option value="" disabled selected>Select Month</option>
+                    <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+                </select>
+
+                <label>Year:</label>
+                <select [(ngModel)]="selectedYear">
+                    <option value="" disabled selected>Select Year</option>
+                    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                </select>
+
+                <button (click)="fetchStudentData()" class="fetch-button">Fetch Data</button>
+            </div>
+
+            <!-- ✅ Filters for Login Logs -->
+            <div class="filter-section" *ngIf="activeSection === 'login-logs'">
+                <label>Role:</label>
+                <select [(ngModel)]="selectedRole">
+                    <option value="" disabled selected>Select Role</option>
+                    <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+                </select>
+
+                <label>Start Date:</label>
+                <input type="date" [(ngModel)]="selectedStartDate">
+
+                <label>End Date:</label>
+                <input type="date" [(ngModel)]="selectedEndDate">
+
+                <button (click)="fetchLoginLogs()" class="fetch-button">Fetch Logs</button>
+            </div>
+        </div>
+
+        <!-- ✅ Student Stats Section -->
+        <section *ngIf="activeSection === 'student-stats'">
+            <div *ngIf="studentData">
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Average Marks</th>
+                            <th>Top Student</th>
+                            <th>Marks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let subject of studentData.average_marks">
+                            <td>{{ subject.subject_name }}</td>
+                            <td>{{ subject.average_marks | number: '1.0-2' }}</td>
+                            <td>
+                                <span *ngFor="let topStudent of studentData.top_students">
+                                    <span *ngIf="topStudent.subject_name === subject.subject_name">
+                                        {{ topStudent.student_name }}
+                                    </span>
+                                </span>
+                            </td>
+                            <td>
+                                <span *ngFor="let topStudent of studentData.top_students">
+                                    <span *ngIf="topStudent.subject_name === subject.subject_name">
+                                        {{ topStudent.marks || topStudent.score || 'N/A' }}
+                                    </span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ✅ Login Logs Section -->
+        <section *ngIf="activeSection === 'login-logs'">
+            <div *ngIf="loginLogs.length > 0">
+                <table class="log-table">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Role</th>
+                            <th>Login Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let log of loginLogs">
+                            <td>{{ log.user_id || 'N/A' }}</td>
+                            <td>{{ log.role }}</td>
+                            <td>{{ log.login_time | date:'medium' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div *ngIf="loginLogs.length === 0 && !showError && selectedRole && selectedStartDate && selectedEndDate">
+                <p class="no-data-message">⚠️ No login logs found for the selected filters.</p>
+            </div>
+        </section>
+
+        <!-- ✅ Manage Users Section -->
+        <section *ngIf="activeSection === 'user-management'">
+            <div class="user-tabs">
+                <button (click)="setActiveSection('add-user')">➕ Add User</button>
+                <button (click)="setActiveSection('delete-user')">❌ Delete User</button>
+            </div>
+        </section>
+
+        <!-- ✅ Add User Section -->
+        <section *ngIf="activeSection === 'add-user'">
+            <div class="user-management-form">
+                <input type="text" [(ngModel)]="newUser.name" placeholder="Enter Name">
+                <select [(ngModel)]="newUser.role">
+                    <option value="" disabled selected>Select Role</option>
+                    <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+                </select>
+                <input type="text" [(ngModel)]="newUser.username" placeholder="Enter Username">
+                <input type="password" [(ngModel)]="newUser.password" placeholder="Enter Password">
+                <button (click)="addUser()">Add User</button>
+                <button (click)="setActiveSection('user-management')">🔙 Back</button>
+            </div>
+        </section>
+
+        <!-- ✅ Delete User Section -->
+        <section *ngIf="activeSection === 'delete-user'">
+            <table class="delete-user-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of users">
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>
+                            <button class="delete-btn" (click)="deleteUser(user.username)">❌ Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button (click)="setActiveSection('user-management')">🔙 Back</button>
+        </section>
+
+        <!-- ✅ Student List Section -->
+        <section *ngIf="activeSection === 'student-list'">
+            <app-student-list></app-student-list>
+        </section>
+    </div>
+</div>

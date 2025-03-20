@@ -1,0 +1,220 @@
+<div class="teacher-dashboard">
+
+  <!-- ============================= -->
+  <!-- Sidebar Navigation -->
+  <!-- ============================= -->
+  <aside class="sidebar">
+    <h3 class="sidebar-title">Teacher Panel</h3>
+    <button (click)="setActiveSection('dashboard')" [class.active]="activeSection === 'dashboard'">
+      📊 Dashboard
+    </button>
+    <button (click)="setActiveSection('add-marks')" [class.active]="activeSection === 'add-marks'">
+      ➕ Add Marks
+    </button>
+    <button (click)="setActiveSection('update-marks')" [class.active]="activeSection === 'update-marks'">
+      📝 Update/Delete Marks
+    </button>
+    <button (click)="setActiveSection('student-list')" [class.active]="activeSection === 'student-list'">
+      📋 Student List
+    </button>
+    <button (click)="setActiveSection('manage-subjects')" [class.active]="activeSection === 'manage-subjects'">
+      📚 Manage Subjects
+    </button>
+  </aside>
+
+  <!-- ============================= -->
+  <!-- Main Content Area -->
+  <!-- ============================= -->
+  <div class="main-content">
+
+    <!-- ============================= -->
+    <!-- 1) DASHBOARD (Pie Chart) -->
+    <!-- ============================= -->
+    <section *ngIf="activeSection === 'dashboard'" class="dashboard-section">
+      <div class="marks-header">
+        <h2>📊 Marks Overview</h2>
+
+        <div class="filter-container">
+          <label for="month-select">Select Month:</label>
+          <select id="month-select" [(ngModel)]="selectedMonth" (change)="fetchChartData()">
+            <option value="" disabled>Select Month</option>
+            <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+          </select>
+
+          <label for="year-select">Select Year:</label>
+          <select id="year-select" [(ngModel)]="selectedYear" (change)="fetchChartData()">
+            <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ✅ Render Chart If Data Exists -->
+      <div *ngIf="pieChartData?.datasets?.length && pieChartData.datasets[0]?.data?.length">
+        <canvas baseChart
+                [data]="pieChartData"
+                [options]="pieChartOptions"
+                [type]="'pie'">
+        </canvas>
+      </div>
+
+      <!-- ✅ Show Message If No Data -->
+      <p *ngIf="!pieChartData?.datasets?.length || !pieChartData.datasets[0]?.data?.length">
+        ⚠️ No data available for the selected month and year.
+      </p>
+    </section>
+
+    <!-- ============================= -->
+    <!-- 2) MANAGE SUBJECTS (Add/Delete) -->
+    <!-- ============================= -->
+    <section *ngIf="activeSection === 'manage-subjects'" class="manage-subjects-section">
+      <h2>📚 Manage Subjects</h2>
+
+      <!-- ✅ Add Subject Form -->
+      <div class="form-row">
+        <label>Subject Name:</label>
+        <input type="text" [(ngModel)]="newSubject.subjectName" placeholder="Enter Subject Name" />
+        <button class="add" (click)="addSubject()">➕ Add Subject</button>
+      </div>
+      
+      <p *ngIf="successMessage && successMessage.includes('added')" class="success-message">
+        {{ successMessage }}
+      </p>
+      <p *ngIf="errorMessage && errorMessage.includes('add')" class="error-message">
+        {{ errorMessage }}
+      </p>
+
+      <!-- ✅ Delete Subject Form -->
+      <div class="form-row">
+        <label>Select Subject to Delete:</label>
+        <select [(ngModel)]="subjectToDelete">
+          <option value="" disabled>Select Subject</option>
+          <option *ngFor="let subject of subjects" [value]="subject.id">
+            {{ subject.subject_name }}
+          </option>
+        </select>
+        <button class="delete" (click)="deleteSubject()">❌ Delete Subject</button>
+      </div>
+      
+      <p *ngIf="successMessage && successMessage.includes('deleted')" class="success-message">
+        {{ successMessage }}
+      </p>
+      <p *ngIf="errorMessage && errorMessage.includes('delete')" class="error-message">
+        {{ errorMessage }}
+      </p>
+    </section>
+
+    <!-- ============================= -->
+    <!-- 3) ADD MARKS SECTION -->
+    <!-- ============================= -->
+    <section *ngIf="activeSection === 'add-marks'" class="add-mark-section">
+      <div class="form-row">
+        <label>Select Student:</label>
+        <select [(ngModel)]="newMark.username">
+          <option value="" disabled>Select Student</option>
+          <option *ngFor="let student of students" [value]="student.username">
+            {{ student.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Select Subject:</label>
+        <select [(ngModel)]="newMark.subject_id">
+          <option value="" disabled>Select Subject</option>
+          <option *ngFor="let subject of subjects" [value]="subject.id">
+            {{ subject.subject_name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Month:</label>
+        <select [(ngModel)]="newMark.month">
+          <option value="" disabled>Select Month</option>
+          <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Year:</label>
+        <input type="number" [(ngModel)]="newMark.year" placeholder="Year" />
+      </div>
+
+      <div class="form-row">
+        <label>Score:</label>
+        <input type="number" [(ngModel)]="newMark.score" placeholder="Score" />
+      </div>
+
+      <button class="add" (click)="addMark()">➕ Add Mark</button>
+
+      <p *ngIf="successMessage && successMessage.includes('added')" class="success-message">
+        {{ successMessage }}
+      </p>
+      <p *ngIf="errorMessage && errorMessage.includes('add')" class="error-message">
+        {{ errorMessage }}
+      </p>
+    </section>
+
+    <!-- ============================= -->
+    <!-- 4) UPDATE/DELETE MARKS SECTION -->
+    <!-- ============================= -->
+    <section *ngIf="activeSection === 'update-marks'" class="update-delete-section">
+      <div class="form-row">
+        <label>Select Student:</label>
+        <select [(ngModel)]="selectedStudentUsername">
+          <option value="" disabled>Select Student</option>
+          <option *ngFor="let student of students" [value]="student.username">
+            {{ student.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Select Subject:</label>
+        <select [(ngModel)]="selectedSubjectId">
+          <option value="" disabled>Select Subject</option>
+          <option *ngFor="let subject of subjects" [value]="subject.id">
+            {{ subject.subject_name }}
+          </option>
+        </select>
+      </div>
+
+      <button class="fetch" (click)="fetchStudentMarks()">🔍 Fetch Marks</button>
+
+      <div *ngIf="studentMarks.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Month</th>
+              <th>Year</th>
+              <th>Score</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let mark of studentMarks">
+              <td>{{ mark.subject_name }}</td>
+              <td>{{ getMonthName(mark.month) }}</td>
+              <td>{{ mark.year }}</td>
+              <td>
+                <input type="number" [(ngModel)]="mark.score" />
+              </td>
+              <td>
+                <button class="update" (click)="updateMark(mark.id, mark.score)">✔️ Update</button>
+                <button class="delete" (click)="deleteMark(mark.id)">❌ Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================= -->
+    <!-- 5) STUDENT LIST SECTION -->
+    <!-- ============================= -->
+    <section *ngIf="activeSection === 'student-list'">
+      <app-student-list></app-student-list>
+    </section>
+  </div>
+</div>

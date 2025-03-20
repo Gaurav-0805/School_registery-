@@ -1,0 +1,48 @@
+<div class="header-container"> 
+  <!-- ✅ Filter Section moved inside .filter-controls -->
+  <div class="filter-controls">
+    <label for="month">Select Month:</label>
+    <select id="month" [(ngModel)]="selectedMonth">
+      <option value="" disabled selected>Select Month</option>
+      <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+    </select>
+
+    <label for="year">Select Year:</label>
+    <select id="year" [(ngModel)]="selectedYear">
+      <option value="" disabled selected>Select Year</option>
+      <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+    </select>
+
+    <button (click)="fetchMyMarks()">Fetch Marks</button>
+  </div>
+</div>
+
+<!-- ✅ Only show the error message if fetch button has been clicked -->
+<p *ngIf="showError && selectedMonth && selectedYear" class="error-message">
+  ❌ {{ errorMessage }}
+</p>
+
+
+<!-- Loading Message -->
+<p *ngIf="loadingMarks">⏳ Loading your marks...</p>
+
+<!-- ✅ FIX: Ensure Table Displays When Marks Are Present -->
+<table *ngIf="!loadingMarks && marks && marks.length > 0">
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Month</th>
+      <th>Year</th>
+      <th>Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let mark of marks">
+      <td>{{ mark.subject_name }}</td>
+      <td>{{ mark.month }}</td>
+      <td>{{ mark.year }}</td>
+      <td>{{ mark.score }}</td>
+    </tr>
+  </tbody>
+</table>
+
