@@ -78,6 +78,18 @@ school-registery/
 ├── package.json
 └── README.md
 
+
+---
+
+## 🚀 Getting Started
+
+### 📦 Clone the Repository
+
+```bash
+git clone https://github.com/Gaurav-0805/school-registery.git
+cd school-registery
+
+
 🖥️ Backend Setup
 cd backend
 npm install
