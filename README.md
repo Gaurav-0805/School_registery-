@@ -1,59 +1,99 @@
-# SchoolRegistery
+# 🎓 School Registery System
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.8.
+A full-featured school management system built with Angular, Node.js, Express, and PostgreSQL. This platform manages users (Admin, Teacher, Student), tracks academic data, and ensures secure authentication and role-based access control.
 
-## Development server
+---
 
-To start a local development server, run:
+## ✨ Features
 
-```bash
+### 👤 User Roles
+- **Admin**
+  - Add, View, and Delete any user (Admin, Teacher, or Student)
+  - Manage all school data (users, subjects, marks)
+- **Teacher**
+  - Add subjects
+  - Assign marks to students per subject
+- **Student**
+  - View their subjects
+  - View marks per subject
+
+### 📅 Academic Management
+- Subject-wise data entry and editing
+- Marks management with secure teacher access
+- Student dashboard to view academic performance
+
+### 🔐 Secure Authentication
+- JWT-based login system
+- Role-based access (Admin, Teacher, Student)
+- Protected routes and data visibility
+
+### 📊 Visual Analytics (Planned)
+- Subject-wise performance charts
+- Class performance distribution
+
+### 💡 Additional Highlights
+- Clean and responsive UI using **Angular Material**
+- Modular codebase structure
+- Fully scalable and maintainable architecture
+
+---
+
+## 🧰 Tech Stack
+
+### Frontend
+- [Angular](https://angular.io/)
+- TypeScript
+- HTML & CSS
+- [Angular Material](https://material.angular.io/)
+
+### Backend
+- [Node.js](https://nodejs.org/)
+- [Express.js](https://expressjs.com/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [JWT (JSON Web Token)](https://jwt.io/)
+
+---
+
+## 📁 Folder Structure
+
+school-registery/
+│
+├── backend/
+│ ├── controllers/
+│ ├── models/
+│ ├── routes/
+│ ├── middleware/
+│ └── index.js
+│
+├── frontend/
+│ ├── src/
+│ │ ├── app/
+│ │ │ ├── components/
+│ │ │ ├── pages/
+│ │ │ ├── services/
+│ │ │ └── ...
+│ └── angular.json
+│
+├── .env
+├── package.json
+└── README.md
+
+🖥️ Backend Setup
+cd backend
+npm install
+
+🌐 Frontend Setup
+cd frontend
+npm install
 ng serve
-```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
+🧪 Development Tips
+Build Angular App
 ng build
-```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+📚 Additional Resources
+Angular CLI Overview
+Express.js Docs
+PostgreSQL Docs
+JWT Guide
