@@ -4,8 +4,13 @@ import { CommonModule, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartType, ChartOptions, ChartData } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { registerables, Chart } from 'chart.js';
 import { StudentListComponent } from '../student-list/student-list.component';
 import { AuthService } from '../services/auth.service';
+
+// Register Chart.js plugins
+Chart.register(...registerables, ChartDataLabels);
 
 @Component({
   selector: 'app-teacher-dashboard',
@@ -15,6 +20,10 @@ import { AuthService } from '../services/auth.service';
   imports: [CommonModule, FormsModule, NgIf, NgChartsModule, StudentListComponent]
 })
 export class TeacherDashboardComponent {
+  
+  // Declare ChartDataLabels as a public property
+  public ChartDataLabels = ChartDataLabels;
+
   activeSection: string = 'dashboard';
   dynamicHeading: string = '📊 Marks Overview';
   teacherName: string = '';
@@ -46,21 +55,24 @@ export class TeacherDashboardComponent {
 
   years = Array.from({ length: 10 }, (_, i) => (new Date().getFullYear() - i).toString());
 
-  pieChartData: ChartData<'pie', number[], string | string[]> = {
+  pieChartData: ChartData<'doughnut', number[], string | string[]> = {
     labels: [],
     datasets: [{
       data: [],
-      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#66FF66', '#FF66FF'],
-      hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#66FF66', '#FF66FF']
+      backgroundColor: ['#5DADE2', '#F7DC6F', '#A569BD', '#58D68D', '#EC7063'],
+      hoverBackgroundColor: ['#3498DB', '#F4D03F', '#8E44AD', '#28B463', '#E74C3C'],
+      borderWidth: 2,
+      borderColor: '#fff',
     }]
   };
-  
-  pieChartOptions: ChartOptions<'pie'> = {
+
+  pieChartOptions: ChartOptions<'doughnut'> = {
     responsive: true,
     maintainAspectRatio: false,
     animation: {
       animateRotate: true,
-      duration: 1500
+      animateScale: true,
+      duration: 2000
     },
     plugins: {
       legend: {
@@ -76,29 +88,39 @@ export class TeacherDashboardComponent {
       },
       tooltip: {
         callbacks: {
-          label: function(context: any) {
-            let label = context.label || '';
-            let value = context.raw || 0;
+          label: (context: any) => {
+            const label = context.label || '';
+            const value = context.raw || 0;
             const dataset = context.dataset.data;
             const total = dataset.reduce((acc: number, val: number) => acc + (val || 0), 0);
-      
-            // Prevent NaN errors and format to two decimal places
-            if (total === 0 || isNaN(value) || isNaN(total)) {
-              return `${label}: ${value.toFixed(2)} (0%)`;
-            }
-      
-            const percentage = ((value / total) * 100).toFixed(2);
+            const percentage = total ? ((value / total) * 100).toFixed(2) : '0.00';
             return `${label}: ${value.toFixed(2)} (${percentage}%)`;
           }
         }
-      }    
-      
-    }
+      },
+      datalabels: {
+        color: '#fff',
+        font: {
+          size: 14,
+          weight: 'bold'
+        },
+        formatter: (value: any, context: any) => {
+          const total = context.chart.data.datasets[0].data.reduce((acc: number, val: number) => acc + (val || 0), 0);
+          if (total === 0) return '0%';
+          const percentage = ((value / total) * 100).toFixed(1);
+          return `${percentage}%`;
+        }
+      }
+    }    
   };
-  
-  pieChartType: ChartType = 'pie';
-  
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private authService: AuthService) {
+
+  pieChartType: ChartType = 'doughnut';
+
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
+  ) {
     this.teacherName = this.authService.getTeacherName();
     this.fetchStudents();
     this.fetchSubjects();
@@ -128,7 +150,7 @@ export class TeacherDashboardComponent {
   }
 
   fetchSubjects() {
-    this.http.get('http://localhost:5000/subjects').subscribe({
+    this.http.get('http://localhost:5000/subjects', this.getAuthHeaders()).subscribe({
       next: (response: any) => { this.subjects = response; },
       error: (error) => console.error('Error fetching subjects:', error)
     });
@@ -139,25 +161,44 @@ export class TeacherDashboardComponent {
       this.errorMessage = '⚠️ Please select both Month and Year to view data.';
       return;
     }
-
+  
     this.http.get<any[]>(`http://localhost:5000/marks/average/${this.selectedMonth}?year=${this.selectedYear}`, this.getAuthHeaders()).subscribe({
       next: (response) => {
+        if (!response || response.length === 0) {
+          this.errorMessage = '❗ No data available for the selected month and year.';
+          this.pieChartData = { labels: [], datasets: [{ data: [] }] };
+          return;
+        }
+  
+        const validData = response.filter(data => data.average_score !== null && !isNaN(data.average_score));
+  
+        if (validData.length === 0) {
+          this.errorMessage = '❗ No valid data available to display.';
+          this.pieChartData = { labels: [], datasets: [{ data: [] }] };
+          return;
+        }
+  
         this.pieChartData = {
-          labels: response.map(data => data.subject_name),
+          labels: validData.map(data => data.subject_name || 'Unknown'),
           datasets: [{
-            data: response.map(data => data.average_score),
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#66FF66', '#FF66FF'],
-            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#66FF66', '#FF66FF']
+            data: validData.map(data => Math.max(0, data.average_score)), // Ensure no negative or NaN values
+            backgroundColor: ['#5DADE2', '#F7DC6F', '#A569BD', '#58D68D', '#EC7063'],
+            hoverBackgroundColor: ['#3498DB', '#F4D03F', '#8E44AD', '#28B463', '#E74C3C'],
+            borderWidth: 2,
+            borderColor: '#fff',
           }]
         };
+  
         this.cdr.detectChanges();
       },
-      error: () => {
+      error: (error) => {
+        console.error('❗ Failed to fetch chart data:', error);
         this.errorMessage = '❗ Failed to fetch chart data!';
         this.pieChartData = { labels: [], datasets: [{ data: [] }] };
       }
     });
   }
+  
 
   getMonthName(monthValue: string): string {
     return this.months.find(m => m.value === monthValue)?.name || '';

@@ -53,7 +53,8 @@
         <canvas baseChart
                 [data]="pieChartData"
                 [options]="pieChartOptions"
-                [type]="'pie'">
+                [type]="'doughnut'"
+                [plugins]="[ChartDataLabels]">
         </canvas>
       </div>
 

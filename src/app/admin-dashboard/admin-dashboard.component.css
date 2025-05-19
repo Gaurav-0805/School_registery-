@@ -29,7 +29,7 @@ html, body {
     margin: 0;
     left: 0;
     position: fixed; /* Fixed to Start from Left Edge */
-    top: 0;
+    top: 60px;
     height: 100vh;
     box-sizing: border-box;
     flex-shrink: 0;
